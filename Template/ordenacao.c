@@ -24,7 +24,7 @@ int buscaSequencial(int vetor[], int tam, int valor, int* numComparacoes){
         return i;
 
     return buscaSequencial(vetor, tam - 1, valor, numComparacoes);
-    
+
 	return -1;
 }
 
@@ -33,9 +33,42 @@ int buscaBinaria(int vetor[], int tam, int valor, int* numComparacoes){
 	return -1;
 }
 
+int buscaInsertionSort(int vetor[], int tam, int valor){
+    if(tam <= 0)
+        return 0;
+
+    int i = tam - 1;
+    if(valor >= vetor[i])
+        return i + 1;
+
+    return buscaInsertionSort(vetor, tam - 1, valor);
+}
+
+void trocar(int a, int b, int vetor[]){
+    int aux = vetor[a];
+    vetor[a] = vetor[b];
+    vetor[b] = aux;
+}
+
+int* inserir(int vetor[], int tam){
+    int p = buscaInsertionSort(vetor, tam - 1, vetor[tam - 1]);
+    
+    for (int i = tam - 1; i > p; i--)
+    {
+        trocar(i, i - 1, vetor);
+    }
+    
+    return vetor;
+}
+
+//TODO: Comparações insertionSort
 int insertionSort(int vetor[], int tam){	
-	vetor[0] = 99;
-	return -1;
+	if(tam <= 1)
+        return 0;
+
+    insertionSort(vetor, tam - 1);
+    inserir(vetor, tam);
+    return 1;
 }
 
 int selectionSort(int vetor[], int tam){
