@@ -71,10 +71,32 @@ int insertionSort(int vetor[], int tam){
     return 1;
 }
 
-int selectionSort(int vetor[], int tam){
-	vetor[0] = 99;
-	return -1;
+int minimo(int vetor[], int a, int b){
+    if(a >= b)
+        return a;
+    
+    int menor = minimo(vetor, a, b - 1);
+
+    if(vetor[b] < vetor[menor])
+        menor = b;
+
+    return menor;
+    
 }
+
+int selectionSortAux(int vetor[], int a, int b){
+    if(a >= b)
+        return 0;
+
+    trocar(a, minimo(vetor, a, b), vetor);
+    return selectionSortAux(vetor, a + 1, b);
+}
+
+int selectionSort(int vetor[], int tam){
+	selectionSortAux(vetor, 0, tam - 1);
+}
+
+
 
 int mergeSort(int vetor[], int tam){
 	vetor[0] = 99;
