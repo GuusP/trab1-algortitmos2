@@ -18,18 +18,18 @@ int main(){
     int* a;
     a = malloc(sizeof(int));
     *a = 0;
-    selectionSort(v, 5);
+    
     for (int i = 0; i < 5; i++)
     {
         printf("%d ", v[i]);
     }
     
-    printf("\npos: %d", buscaBinaria(v, 5, 7, a));
+    mergeSort(v, 5);
 
-    /*for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 5; i++)
     {
         printf("\n%d", v[i]);
-    }*/
+    }
 
     return 0;
 }

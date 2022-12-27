@@ -112,10 +112,51 @@ int selectionSort(int vetor[], int tam){
 	selectionSortAux(vetor, 0, tam - 1);
 }
 
+void copiar(int v[], int u[], int a, int b){
+    for (int i = 0; i <= b - a; i++)
+    {
+        v[a+i] = u[i];
+    }
+    
+}
 
+int merge(int vetor[], int a, int m, int b){
+    if(a >= b)
+        return 0;
+
+    int i = a;
+    int j = m + 1;
+    int u[b - a + 1];
+    int p;
+    for (int k = 0; k <= b - a; k++)
+    {
+        if(j > b || (i <= m && vetor[i] < vetor[j])){
+            p = i;
+            i++;
+        }else{
+            p = j;
+            j++;
+        }
+
+        u[k] = vetor[p];
+    }
+    copiar(vetor, u, a, b);
+}
+
+//TODO: Comparações Merge Sort.
+int mergeSortAux(int vetor[], int a, int b){
+    if(a >= b)
+        return 0;
+    
+    int m = (a + b)/2;
+
+    mergeSortAux(vetor, a, m);
+    mergeSortAux(vetor, m + 1, b);
+    merge(vetor, a, m, b);
+}
 
 int mergeSort(int vetor[], int tam){
-	vetor[0] = 99;
+	mergeSortAux(vetor, 0, tam - 1);
 	return -1;
 }
 
