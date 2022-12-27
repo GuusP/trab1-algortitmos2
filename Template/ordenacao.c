@@ -1,5 +1,5 @@
 #include "ordenacao.h"
-
+#include <math.h>
 #include <string.h>
 
 void getNome(char nome[]){
@@ -28,9 +28,26 @@ int buscaSequencial(int vetor[], int tam, int valor, int* numComparacoes){
 	return -1;
 }
 
+
+//TODO: número de comparações BuscaBinaria
+int buscaBinariaAux(int vetor[], int a, int b, int valor, int* numComparacoes){
+    if(a > b)
+        return -1;
+
+    int meio = (a + b) / 2;
+    if(valor == vetor[meio])
+        return meio;
+
+    if(valor < vetor[meio])
+        return buscaBinariaAux(vetor, a, meio - 1, valor, numComparacoes);
+
+    return buscaBinariaAux(vetor, meio + 1, b, valor, numComparacoes);       
+}
+
 int buscaBinaria(int vetor[], int tam, int valor, int* numComparacoes){
+    
 	*numComparacoes = 99;
-	return -1;
+	return buscaBinariaAux(vetor, 0, tam - 1, valor, numComparacoes);
 }
 
 int buscaInsertionSort(int vetor[], int tam, int valor){
@@ -54,9 +71,7 @@ int* inserir(int vetor[], int tam){
     int p = buscaInsertionSort(vetor, tam - 1, vetor[tam - 1]);
     
     for (int i = tam - 1; i > p; i--)
-    {
         trocar(i, i - 1, vetor);
-    }
     
     return vetor;
 }
@@ -71,6 +86,7 @@ int insertionSort(int vetor[], int tam){
     return 1;
 }
 
+//TODO: Comparaões selectionSort
 int minimo(int vetor[], int a, int b){
     if(a >= b)
         return a;
