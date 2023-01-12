@@ -13,31 +13,43 @@ unsigned int getGRR(){
 	return 20220067;
 }
 
-int buscaSequencial(int vetor[], int tam, int valor, int* numComparacoes){
-    if(tam <= 0)
-        return -1;
-    
-    int i = tam - 1;
+//Retorna a posição que o elemento VALOR deve ser inserido no vetor
+int buscaSequencialAux(int vetor[], int a, int b, int valor, int *numComparacoes){
+    if(a > b)
+        return a - 1;
 
     *numComparacoes += 1;
-    if(valor == vetor[i])
-        return i;
+    if(valor >= vetor[b])
+        return b;
 
-    return buscaSequencial(vetor, tam - 1, valor, numComparacoes);
+    return buscaSequencialAux(vetor, a, b - 1, valor, numComparacoes);
+}
+
+int buscaSequencial(int vetor[], int tam, int valor, int* numComparacoes){
+    int indice = buscaSequencialAux(vetor, 0, tam - 1, valor, numComparacoes);
+
+
+    if(indice >= 0)
+        *numComparacoes += 1;
+        if(vetor[indice] == valor)
+            return indice;
+    
 
 	return -1;
 }
 
 
 //TODO: número de comparações BuscaBinaria
+//Comparações: log(base 2) de N + 2 (pior caso) [quando vai para o maior lado]
+// log(base 2) de N + 1 qnd vai para o menor lado e o elemento está
+//Melhor caso: log(base 2) de N qnd vai para o menor lado e o elemento não está
 int buscaBinariaAux(int vetor[], int a, int b, int valor, int* numComparacoes){
     if(a > b)
-        return -1;
-
+        return a - 1;
+        
     int meio = (a + b) / 2;
-    if(valor == vetor[meio])
-        return meio;
 
+    *numComparacoes += 1;
     if(valor < vetor[meio])
         return buscaBinariaAux(vetor, a, meio - 1, valor, numComparacoes);
 
@@ -45,20 +57,26 @@ int buscaBinariaAux(int vetor[], int a, int b, int valor, int* numComparacoes){
 }
 
 int buscaBinaria(int vetor[], int tam, int valor, int* numComparacoes){
-    
-	*numComparacoes = 99;
-	return buscaBinariaAux(vetor, 0, tam - 1, valor, numComparacoes);
+    int indice = buscaBinariaAux(vetor, 0, tam - 1, valor, numComparacoes);
+
+	if(indice >= 0){
+        *numComparacoes += 1;
+        if(vetor[indice] == valor)
+            return indice;
+    }
+
+    return -1;
 }
 
-int buscaInsertionSort(int vetor[], int tam, int valor){
-    if(tam <= 0)
-        return 0;
+//Busca sequencial. Tive que criar outra para não utilizar o parâmetro "numComparacoes"
+int buscaInsertionSort(int vetor[], int a, int b, int valor){
+    if(a > b)
+        return a - 1;
 
-    int i = tam - 1;
-    if(valor >= vetor[i])
-        return i + 1;
+    if(valor >= vetor[b])
+        return b;
 
-    return buscaInsertionSort(vetor, tam - 1, valor);
+    return buscaInsertionSort(vetor, a, b - 1, valor);
 }
 
 void trocar(int a, int b, int vetor[]){
@@ -68,9 +86,9 @@ void trocar(int a, int b, int vetor[]){
 }
 
 int* inserir(int vetor[], int tam){
-    int p = buscaInsertionSort(vetor, tam - 1, vetor[tam - 1]);
+    int p = buscaInsertionSort(vetor, 0, tam - 2, vetor[tam - 1]);
     
-    for (int i = tam - 1; i > p; i--)
+    for (int i = tam - 1; i > p + 1; i--)
         trocar(i, i - 1, vetor);
     
     return vetor;
