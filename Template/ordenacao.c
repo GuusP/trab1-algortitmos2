@@ -14,6 +14,7 @@ unsigned int getGRR(){
 }
 
 //Retorna a posição que o elemento VALOR deve ser inserido no vetor
+// realiza N comparações
 int buscaSequencialAux(int vetor[], int a, int b, int valor, int *numComparacoes){
     if(a > b)
         return a - 1;
@@ -24,6 +25,7 @@ int buscaSequencialAux(int vetor[], int a, int b, int valor, int *numComparacoes
 
     return buscaSequencialAux(vetor, a, b - 1, valor, numComparacoes);
 }
+
 
 int buscaSequencial(int vetor[], int tam, int valor, int* numComparacoes){
     int indice = buscaSequencialAux(vetor, 0, tam - 1, valor, numComparacoes);
@@ -39,7 +41,6 @@ int buscaSequencial(int vetor[], int tam, int valor, int* numComparacoes){
 }
 
 
-//TODO: número de comparações BuscaBinaria
 //Comparações: log(base 2) de N + 2 (pior caso) [quando vai para o maior lado]
 // log(base 2) de N + 1 qnd vai para o menor lado e o elemento está
 //Melhor caso: log(base 2) de N qnd vai para o menor lado e o elemento não está
@@ -68,49 +69,49 @@ int buscaBinaria(int vetor[], int tam, int valor, int* numComparacoes){
     return -1;
 }
 
-//Busca sequencial. Tive que criar outra para não utilizar o parâmetro "numComparacoes"
-int buscaInsertionSort(int vetor[], int a, int b, int valor){
-    if(a > b)
-        return a - 1;
-
-    if(valor >= vetor[b])
-        return b;
-
-    return buscaInsertionSort(vetor, a, b - 1, valor);
-}
-
 void trocar(int a, int b, int vetor[]){
     int aux = vetor[a];
     vetor[a] = vetor[b];
     vetor[b] = aux;
 }
 
-int* inserir(int vetor[], int tam){
-    int p = buscaInsertionSort(vetor, 0, tam - 2, vetor[tam - 1]);
+void inserir(int vetor[], int tam, int *numComparacoes){
+    int p = buscaSequencialAux(vetor, 0, tam - 2, vetor[tam - 1], numComparacoes);
     
     for (int i = tam - 1; i > p + 1; i--)
         trocar(i, i - 1, vetor);
     
-    return vetor;
+    return;
 }
 
-//TODO: Comparações insertionSort
-int insertionSort(int vetor[], int tam){	
+void insertionSortAux(int vetor[], int tam, int *numComparacoes){	
 	if(tam <= 1)
-        return 0;
+        return;
 
-    insertionSort(vetor, tam - 1);
-    inserir(vetor, tam);
-    return 1;
+    insertionSortAux(vetor, tam - 1, numComparacoes);
+    inserir(vetor, tam, numComparacoes);
+    return;
 }
 
-//TODO: Comparaões selectionSort
-int minimo(int vetor[], int a, int b){
+//Comparações: (n^2 - n) / 2
+//Trocas: 0 se o vetor ja estiver ordenado e (n^2 - n)/2 se o vetor estiver em ordem decrescente (pior caso)
+// quando mais próximo da posição correta o elemento está, menor é o nmr de trocas
+int insertionSort(int vetor[], int tam){
+    int comparacoes = 0;
+
+    insertionSortAux(vetor, tam, &comparacoes);
+
+    return comparacoes;
+}
+
+
+int minimo(int vetor[], int a, int b, int *numComparacoes){
     if(a >= b)
         return a;
     
-    int menor = minimo(vetor, a, b - 1);
+    int menor = minimo(vetor, a, b - 1, numComparacoes);
 
+    *numComparacoes += 1;
     if(vetor[b] < vetor[menor])
         menor = b;
 
@@ -118,16 +119,22 @@ int minimo(int vetor[], int a, int b){
     
 }
 
-int selectionSortAux(int vetor[], int a, int b){
+void selectionSortAux(int vetor[], int a, int b, int *numComparacoes){
     if(a >= b)
-        return 0;
+        return;
 
-    trocar(a, minimo(vetor, a, b), vetor);
-    return selectionSortAux(vetor, a + 1, b);
+    trocar(a, minimo(vetor, a, b, numComparacoes), vetor);
+    selectionSortAux(vetor, a + 1, b, numComparacoes);
 }
 
+// Comparações: (n^2 - n) / 2
+// Trocas: n - 1
 int selectionSort(int vetor[], int tam){
-	selectionSortAux(vetor, 0, tam - 1);
+    int comparacoes= 0;
+
+	selectionSortAux(vetor, 0, tam - 1, &comparacoes);
+
+    return comparacoes;
 }
 
 void copiar(int v[], int u[], int a, int b){
@@ -138,9 +145,9 @@ void copiar(int v[], int u[], int a, int b){
     
 }
 
-int merge(int vetor[], int a, int m, int b){
+void merge(int vetor[], int a, int m, int b, int *numComparacoes){
     if(a >= b)
-        return 0;
+        return;
 
     int i = a;
     int j = m + 1;
@@ -148,6 +155,7 @@ int merge(int vetor[], int a, int m, int b){
     int p;
     for (int k = 0; k <= b - a; k++)
     {
+        *numComparacoes += 1;
         if(j > b || (i <= m && vetor[i] < vetor[j])){
             p = i;
             i++;
@@ -161,21 +169,23 @@ int merge(int vetor[], int a, int m, int b){
     copiar(vetor, u, a, b);
 }
 
-//TODO: Comparações Merge Sort.
-int mergeSortAux(int vetor[], int a, int b){
+void mergeSortAux(int vetor[], int a, int b, int *numComparacoes){
     if(a >= b)
-        return 0;
+        return;
     
     int m = (a + b)/2;
 
-    mergeSortAux(vetor, a, m);
-    mergeSortAux(vetor, m + 1, b);
-    merge(vetor, a, m, b);
+    mergeSortAux(vetor, a, m, numComparacoes);
+    mergeSortAux(vetor, m + 1, b, numComparacoes);
+    merge(vetor, a, m, b, numComparacoes);
 }
 
+//comparações: nlogn 
 int mergeSort(int vetor[], int tam){
-	mergeSortAux(vetor, 0, tam - 1);
-	return -1;
+    int comparacoes = 0;
+
+	mergeSortAux(vetor, 0, tam - 1, &comparacoes);
+	return comparacoes;
 }
 
 int quickSort(int vetor[], int tam){

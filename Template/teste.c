@@ -5,10 +5,12 @@
 
 
 
-int main(){
-    int v[10];
-    int j = 5;
-    for (int i = 0; i < 10; i++)
+int main(){ 
+    int tamVetor = 10;
+    int v[tamVetor];
+    int j = tamVetor;
+   
+    for (int i = 0; i < tamVetor; i++)
     {
             v[i] = j;
             j--;
@@ -17,14 +19,13 @@ int main(){
     a = malloc(sizeof(int));
     *a = 0;
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < tamVetor; i++)
     {
         printf("%d ", v[i]);
     }
 
-    insertionSort(v, 10);
-    printf("\n");
-    for (int i = 0; i < 10; i++)
+    printf("comparacoes: %d\n", mergeSort(v, tamVetor)); 
+    for (int i = 0; i < tamVetor; i++)
     {
         printf("%d ", v[i]);
     }
