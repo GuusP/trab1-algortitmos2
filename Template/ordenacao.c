@@ -41,9 +41,7 @@ int buscaSequencial(int vetor[], int tam, int valor, int* numComparacoes){
 }
 
 
-//Comparações: log(base 2) de N + 2 (pior caso) [quando vai para o maior lado]
-// log(base 2) de N + 1 qnd vai para o menor lado e o elemento está
-//Melhor caso: log(base 2) de N qnd vai para o menor lado e o elemento não está
+
 int buscaBinariaAux(int vetor[], int a, int b, int valor, int* numComparacoes){
     if(a > b)
         return a - 1;
@@ -57,6 +55,9 @@ int buscaBinariaAux(int vetor[], int a, int b, int valor, int* numComparacoes){
     return buscaBinariaAux(vetor, meio + 1, b, valor, numComparacoes);       
 }
 
+//Comparações: log(base 2) de N + 2 (pior caso) [quando vai para o maior lado]
+// log(base 2) de N + 1 qnd vai para o menor lado e o elemento está
+//Melhor caso: log(base 2) de N qnd vai para o menor lado e o elemento não está
 int buscaBinaria(int vetor[], int tam, int valor, int* numComparacoes){
     int indice = buscaBinariaAux(vetor, 0, tam - 1, valor, numComparacoes);
 
@@ -181,6 +182,8 @@ void mergeSortAux(int vetor[], int a, int b, int *numComparacoes){
 }
 
 //comparações: nlogn 
+//merges: n - 1
+//memória: n + nlog(n)
 int mergeSort(int vetor[], int tam){
     int comparacoes = 0;
 
