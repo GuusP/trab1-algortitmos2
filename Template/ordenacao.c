@@ -1,6 +1,7 @@
 #include "ordenacao.h"
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 
 void getNome(char nome[]){
 	//substitua por seu nome
@@ -31,10 +32,12 @@ int buscaSequencial(int vetor[], int tam, int valor, int* numComparacoes){
     int indice = buscaSequencialAux(vetor, 0, tam - 1, valor, numComparacoes);
 
 
-    if(indice >= 0)
+    if(indice >= 0){
         *numComparacoes += 1;
         if(vetor[indice] == valor)
             return indice;
+    }
+        
     
 
 	return -1;
@@ -152,7 +155,8 @@ void merge(int vetor[], int a, int m, int b, int *numComparacoes){
 
     int i = a;
     int j = m + 1;
-    int u[b - a + 1];
+    int *u;
+    u = malloc(sizeof(int)*(b - a + 1));
     int p;
     for (int k = 0; k <= b - a; k++)
     {
@@ -168,6 +172,7 @@ void merge(int vetor[], int a, int m, int b, int *numComparacoes){
         u[k] = vetor[p];
     }
     copiar(vetor, u, a, b);
+    free(u);
 }
 
 void mergeSortAux(int vetor[], int a, int b, int *numComparacoes){
@@ -191,9 +196,38 @@ int mergeSort(int vetor[], int tam){
 	return comparacoes;
 }
 
+int particiona(int vetor[], int a, int b, int *numComparacoes){
+    int pivo = vetor[b];
+    int m = a;
+
+    for(int i = a; i <= b - 1; i++){
+        *numComparacoes += 1;
+        if(vetor[i] <= pivo){
+            trocar( m, i, vetor);
+            m++;
+        }
+    }
+
+    trocar(m, b, vetor);
+
+    return m;
+}
+
+void quickSortAux(int vetor[], int a, int b, int *numComparacoes){
+    if(a >= b)
+        return;
+
+	int m = particiona(vetor, a, b, numComparacoes);
+
+    quickSortAux(vetor, a, m - 1, numComparacoes);
+    quickSortAux(vetor, m + 1, b, numComparacoes);
+}
+
 int quickSort(int vetor[], int tam){
-	vetor[0] = 99;
-	return -1;
+    int comparacoes = 0;
+
+	quickSortAux(vetor, 0, tam - 1, &comparacoes);
+	return comparacoes;
 }
 
 int heapSort(int vetor[], int tam){
