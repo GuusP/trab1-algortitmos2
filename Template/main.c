@@ -37,10 +37,8 @@ void imprimeVetor(int vetor[], int tamVetor){
 
 void copiarVet(int v1[], int v2[], int tam){
     for (int i = 0; i < tam; i++)
-    {
         v1[i] = v2[i];
-    }
-    
+
 }
 
 
@@ -90,6 +88,15 @@ void testesSorts(int vetor[], int tamVetor, int vetorAleatorio[]){
     printf("Vetor resultante: ");
     imprimeVetor(vetor, tamVetor);  
 
+    insereVetorDecrescente(vetor, tamVetor);
+    start = clock();//start recebe o "ciclo" corrente
+	numComp = heapSort(vetor, tamVetor);
+	end = clock();//end recebe o "ciclo" corrente
+    total = ((double)end - start)/CLOCKS_PER_SEC;
+	printf("\nHeap Sort (tamVetor: %d, vetor em ordem decrescente): \nComparacoes = %d, Tempo = %f\n", tamVetor, numComp, total);
+    printf("Vetor resultante: ");
+    imprimeVetor(vetor, tamVetor);
+
     printf("\n### --------------------------------------------------------------------------------------------------- ###\n");
 
     insereVetorOrdenado(vetor, tamVetor);
@@ -130,6 +137,15 @@ void testesSorts(int vetor[], int tamVetor, int vetorAleatorio[]){
 	printf("\nQuick Sort (tamVetor: %d, vetor ORDENADO): \nComparacoes = %d, Tempo = %f\n", tamVetor, numComp, total);
     printf("Vetor resultante: ");
     imprimeVetor(vetor, tamVetor); 
+
+    insereVetorOrdenado(vetor, tamVetor);
+    start = clock();//start recebe o "ciclo" corrente
+	numComp = heapSort(vetor, tamVetor);
+	end = clock();//end recebe o "ciclo" corrente
+    total = ((double)end - start)/CLOCKS_PER_SEC;
+	printf("\nHeap Sort (tamVetor: %d, vetor ORDENADO): \nComparacoes = %d, Tempo = %f\n", tamVetor, numComp, total);
+    printf("Vetor resultante: ");
+    imprimeVetor(vetor, tamVetor); 
     
     printf("\n### --------------------------------------------------------------------------------------------------- ###\n");
 
@@ -155,30 +171,60 @@ void testesSorts(int vetor[], int tamVetor, int vetorAleatorio[]){
     imprimeVetor(vetor, tamVetor);
 
     copiarVet(vetor, vetorAleatorio, tamVetor);
-    start = clock();//start recebe o "ciclo" corrente
+    start = clock();
 	numComp = mergeSort(vetor, tamVetor);
-	end = clock();//end recebe o "ciclo" corrente
+	end = clock();
     total = ((double)end - start)/CLOCKS_PER_SEC;
 	printf("\nMerge Sort (tamVetor: %d, vetor ALEATORIO): \nComparacoes = %d, Tempo = %f\n", tamVetor, numComp, total);
     printf("Vetor resultante: ");
     imprimeVetor(vetor, tamVetor);   
 
     copiarVet(vetor, vetorAleatorio, tamVetor);
-    start = clock();//start recebe o "ciclo" corrente
+    start = clock();
 	numComp = quickSort(vetor, tamVetor);
-	end = clock();//end recebe o "ciclo" corrente
+	end = clock();
     total = ((double)end - start)/CLOCKS_PER_SEC;
 	printf("\nQuick Sort (tamVetor: %d, vetor ALEATORIO): \nComparacoes = %d, Tempo = %f\n", tamVetor, numComp, total);
+    printf("Vetor resultante: ");
+    imprimeVetor(vetor, tamVetor); 
+
+    copiarVet(vetor, vetorAleatorio, tamVetor);
+    start = clock();
+	numComp = heapSort(vetor, tamVetor);
+	end = clock();
+    total = ((double)end - start)/CLOCKS_PER_SEC;
+	printf("\nHeap Sort (tamVetor: %d, vetor ALEATORIO): \nComparacoes = %d, Tempo = %f\n", tamVetor, numComp, total);
     printf("Vetor resultante: ");
     imprimeVetor(vetor, tamVetor); 
 
     printf("\n### --------------------------------------------------------------------------------------------------- ###\n");
 }
 
+void testesBuscas(int vetor[], int tamVetor, int elemento){
+    int numComp = 0;
+    int idxBusca;
+
+    clock_t start, end;//variáveis do tipo clock_t
+    double total;
+
+    printf("\nTamanho vetor: %d - Elemento procurado: %d", tamVetor, elemento);
+    start = clock();
+    idxBusca = buscaBinaria(vetor, tamVetor, elemento, &numComp);
+    end = clock();
+    total = ((double)end - start)/CLOCKS_PER_SEC;
+    printf("\nBusca Binaria - Comparacoes = %d - Total = %f", numComp, total);
+    numComp = 0;
+    start = clock();
+    buscaSequencial(vetor, tamVetor, elemento, &numComp);
+    end = clock();
+    total = ((double)end - start)/CLOCKS_PER_SEC;
+    printf("\nBusca Sequencial - Comparacoes = %d - Total = %f", numComp, total);
+    printf("\nO elemento esta na posicao: %d\n\n", idxBusca);
+}
+
 int main(){
     srand(1);
 	char nome[MAX_CHAR_NOME];
-	int idxBusca;
 	//Dica: somente é posśivel criar vetores grandes utilizando alocação dinâmica de memória
 	//Veja um exemplo de alocação dinâmica a seguir
 	int tamVetor = 50000;
@@ -199,30 +245,40 @@ int main(){
     printf("\n");
     printf("Para cada leva de testes, sera dito qual foi o tamanho considerado do vetor e como ele eh\nApos cada teste da leva, o vetor eh redefinido para o estado inicial passado antes do primeiro teste da atual leva\n");
 
-    for (int i = 10; i <= 10000; i = i * 10)
+    for (int i = 10; i <= 10000; i = i * 10){
+        insereVetorAleatorio(vetorAleatorio, i);
         testesSorts(vetor, i, vetorAleatorio);
-
+    }
+        
+    insereVetorAleatorio(vetorAleatorio, 50000);
     testesSorts(vetor, 50000, vetorAleatorio);
+
+    printf("\n\n----- TESTES DE BUSCA -----");
+    printf("\n----- Nos testes a seguir, os elementos estao ordenados e os seus valores pertencem ao intervalo [1..TamVetor] onde nenhum elemento eh repetido ------");
     
+    insereVetorOrdenado(vetor, 50000);
+    for(int i = 10; i <= 10000; i = i * 10){
+        testesBuscas(vetor, i, vetor[i - 1]);
+        testesBuscas(vetor, i, vetor[0]);
+        testesBuscas(vetor, i, vetor[i/2]);
+    }
+        
+    testesBuscas(vetor, 50000, vetor[50000 - 1]);
+    testesBuscas(vetor, 50000, vetor[0]);
+    testesBuscas(vetor, 50000, vetor[25000]);
+
+    testesBuscas(vetor, 50000, -1);
+    testesBuscas(vetor, 50000, 100000);
+
+    printf("\n\n------- Nos testes a seguir, o vetor eh aleatorio com valores entre [0..49999] e pode haver valores repetidos --------\n\n");
+    for (int i = 0; i < 20; i++)
+    {
+        insereVetorAleatorio(vetor, 50000);
+        mergeSort(vetor, 50000);
+        testesBuscas(vetor, 50000, rand() % 60000);
+    }
     
-    
-	//o tempo total é a diferença dividia pelos ciclos por segundo
-	/*total = ((double)end - start)/CLOCKS_PER_SEC;
-	printf("Tempo total: %f", total);
 
-	numComp = selectionSort(vetor, 3);
-	numComp = mergeSort(vetor, 3);
-	numComp = quickSort(vetor, 3);*/
-
-	
-	//idxBusca = buscaBinaria(vetor, tamVetor, 9999, &numComp);
-    //printf("\n%d %d", idxBusca, numComp);
-	//idxBusca = buscaBinaria(vetor, 3, 10, &numComp);
-
-	
-	
-
-	//É obrigatório que você libere a memória alocada dinâmicamente via fee
 	free(vetor);
     free(vetorAleatorio);
 	return 0;

@@ -223,6 +223,8 @@ void quickSortAux(int vetor[], int a, int b, int *numComparacoes){
     quickSortAux(vetor, m + 1, b, numComparacoes);
 }
 
+//pior caso: (n^2+n - 2)/2
+//melhor caso e caso médio: nlogn
 int quickSort(int vetor[], int tam){
     int comparacoes = 0;
 
@@ -230,7 +232,59 @@ int quickSort(int vetor[], int tam){
 	return comparacoes;
 }
 
-int heapSort(int vetor[], int tam){
-	vetor[0] = 99;
-	return -1;
+int indiceFilhoEsquerdo(int i){
+    return (i << 1) + 1;
+}
+
+int indiceFilhoDireito(int i){
+    return (i << 1) + 2;
+}
+
+int maxHeapify(int heap[], int i, int n){
+    int l = indiceFilhoEsquerdo(i);
+    int r = indiceFilhoDireito(i);
+    int maior;
+    int comparacoes = 0;
+
+    maior = i;
+    if(l < n){
+        comparacoes += 1;
+        if(heap[l] > heap[i])
+            maior = l;
+    }
+
+    if(r < n){
+        comparacoes += 1;
+        if(heap[r] > heap[maior])
+        maior = r;
+    }
+
+    if(maior != i){
+        trocar(i, maior, heap);
+        return comparacoes + maxHeapify(heap, maior, n);
+    }
+
+    return comparacoes;
+}
+
+int construirMaxHeap(int vetor[], int n){
+    int comparacoes = 0;
+    for(int i = n / 2 - 1; i >= 0; i--){
+        comparacoes += maxHeapify(vetor, i, n);
+    }
+     return comparacoes;   
+}
+
+//pior caso: n + 2nlogn
+int heapSort(int v[], int n){
+    int comparacoes = 0;
+    comparacoes += construirMaxHeap(v, n);
+    
+    for (int i = n - 1; i >= 1; i--)
+    {
+        trocar( i, 0, v);
+        comparacoes += maxHeapify(v, 0, i);
+    }
+    
+    return comparacoes;
 }
